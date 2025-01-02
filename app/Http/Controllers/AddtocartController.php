@@ -7,7 +7,7 @@ use App\Models\Cart;
 
 class AddtocartController extends Controller
 {
-    public function add_to_cart($id)
+    public function add_to_cart(Request $request,$id)
     {
         $userId = auth()->check() ? auth()->id() : session('guest_id', generateRandomId());
 
@@ -23,10 +23,13 @@ class AddtocartController extends Controller
             return response()->json(['message' => 'This product is already in your cart.']);
         }
     
-             $product_id = $id;            
+             $product_id = $id;   
+             $quantity = $request->input('quantity', 1);
+
              $cart = new Cart;
              $cart->product_id =$product_id;
              $cart->user_id =  $userId;
+             $cart->qty = $quantity;
              $cart->save();
              return response()->json([
                 'message' => 'Cart product added successfully!'

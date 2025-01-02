@@ -36,7 +36,7 @@
                                     <div class="form-group">
                                         <label for="exampleInputName">Coupan Code</label>
                                         <input type="text" class="form-control" name="coupan_code"
-                                            placeholder="Enter a Coupan Code"  value="{{ old('coupan_code') }}">
+                                        style="text-transform: uppercase;"  placeholder="Enter a Coupan Code"  value="{{ old('coupan_code') }}">
                                             @error('coupan_code')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror

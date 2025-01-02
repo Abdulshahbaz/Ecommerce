@@ -25,7 +25,16 @@ class UserloginController extends Controller
         $user_login = User::where('email', $credentials['email'])->first();
 
         if (Auth::attempt($request->only('email', 'password'))) {
-            return redirect()->route('check.out');
+            $redirect = $request->query('redirect', 'home');
+
+            if ($redirect === 'checkout') 
+            {
+                return redirect()->route('check.out');
+            } 
+            elseif ($redirect === 'home')
+             {
+                return redirect()->route('home.page');
+            }
         }
         return redirect()->back()->with('error', 'Please Eneter Valid Email and Pasword');
     }

@@ -49,7 +49,6 @@ class CouponController extends Controller
             $discount = $coupan->value; 
         } 
         elseif ($coupan->type == 'percent') {
-          //  $discount = (float)($coupan->value)*((float)$subtotal/100); 
             $discount = round((float)$coupan->value * ((float)$subtotal / 100), 2);
     
         }
@@ -57,6 +56,8 @@ class CouponController extends Controller
         session([
             'coupan_code' => $coupan->coupan_code,
             'discount' => $discount, 
+            'cart_value'=>$coupan->cart_value,
+    
         ]);
     
        // $coupan->increment('used_count'); 
@@ -65,15 +66,22 @@ class CouponController extends Controller
             'success' => true, 
             'message' => 'Coupon applied successfully!',
             'discount' => $discount,
-            'total_amount' => $subtotal - $discount 
+            'total_amount' => $subtotal - $discount,
+            'cart_value'=>$coupan->cart_value
+           
         ], 200);
     }
     
     public function remove_coupon(Request $request)
-    {
+    {    
         if (session()->has('coupan_code')) {
-            session()->forget(['coupan_code', 'value', 'maxuse', 'used_count']);
-            return response()->json(['success' => true, 'message' => 'Coupon removed successfully!'], 200);
+
+            session()->forget(['coupan_code', 'discount', 'value', 'maxuse', 'used_count']);
+            
+            return response()->json([
+                  'success' => true, 
+                  'message' => 'Coupon removed successfully!'],
+                   200);
         }
     
         return response()->json(['success' => false, 'message' => 'No coupon found to remove.'], 400);

@@ -13,10 +13,17 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, $userId = null)
     {
-
-        $orders = Order::where('payment_status','completed')->get();
+        if($userId)
+        {
+            $orders = Order::where('payment_status','completed')
+                             ->where('user_id',$userId)->get();
+        }
+        else
+        {
+            $orders = Order::where('payment_status','completed')->get();
+        }
         return view('admin.order.order-list',['orders' => $orders]);
     }
 

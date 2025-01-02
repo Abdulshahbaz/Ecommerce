@@ -61,9 +61,19 @@
                     <h5>Discount Codes</h5>
                     <form id="coupon-form" action="{{ route('apply.coupan') }}" method="POST">
                         @csrf
-                        <input type="text" placeholder="Enter your coupon code" name="coupan_code" id="coupon-code">
-                        <button type="submit" id="apply-coupon-btn" class="site-btn">APPLY COUPON</button>
-                        <button type="button" id="remove-coupon-btn" class="site-btn" style="display: none;">REMOVE COUPON</button>
+                        <input type="text" placeholder="Enter your coupon code" name="coupan_code" id="coupon-code"
+                        value="{{ session('coupan_code', '') }}" 
+                        {{ session()->has('coupan_code') ? 'readonly' : ''}}>
+
+                        <button type="submit" id="apply-coupon-btn" class="site-btn" 
+                        style="display: {{ session()->has('coupan_code') ? 'none' : 'inline-block' }};">
+                    APPLY COUPON
+                </button>
+            
+                <button type="button" id="remove-coupon-btn" class="site-btn" 
+                        style="display: {{ session()->has('coupan_code') ? 'inline-block' : 'none' }};">
+                    REMOVE COUPON
+                </button>
                     </form>
                     
                     <div id="coupon-message" style="margin-top: 10px; color: green; display: none;"></div>
@@ -73,7 +83,8 @@
                 </div>
             </div>
         </div>
-        
+        <input type="hidden" class="cart-value" value="{{ session('cart_value') }}">
+
         <div class="col-lg-6">
             <div class="shoping__checkout">
                 <h5>Cart Total</h5>
@@ -82,16 +93,17 @@
                         Subtotal <span class="sub-total">${{ $total_amount }}</span>
                     </li>
                     <li id="discount" style="display: {{ session()->has('coupan_code') && $total_amount > 0 ? 'block' : 'none' }};">
-                        Discount <span id="coupan_code">${{ session('value', 0) }}</span>
+                        Discount <span id="coupan-code">${{ session('discount', 0) }}</span>
                     </li>
                     <li>
-                        Total <span class="total_amount" id="total-amount">
-                    ${{ is_numeric($total_amount) && is_numeric(session('value')) ? $total_amount - session('value') : $total_amount }}
-                   </span>
+                        Total <span class="total-amount" id="total-amount">
+                           ${{ $total_amount - session('discount', 0) }}
+                        </span>
                     </li>
                 </ul>
                 
-                <a href="{{ auth()->check() ? route('check.out') : route('user.login') }}" class="primary-btn">PROCEED TO CHECKOUT</a>
+                
+                <a href="{{ auth()->check() ? route('check.out') : route('user.login', ['redirect' => 'checkout']) }}" class="primary-btn">PROCEED TO CHECKOUT</a>
             </div>
         </div>
     </div>
@@ -100,6 +112,39 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   $(document).ready(function () {
+   
+    function removeCoupon() {
+        $('#coupon-message').hide();
+        $.ajax({
+            url: '{{ route('remove.coupan') }}',
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function (response) {
+            $('#coupon-code').val('').prop('readonly', false);
+            $('#coupon-message').text(response.message).show();
+            $('#apply-coupon-btn').show(); 
+            $('#remove-coupon-btn').hide(); 
+            $('#discount').hide(); 
+            $('#coupan-code').text('$0');
+            let subtotal = parseFloat($('.sub-total').text().replace('$', '')) || 0;
+            $('.total-amount').text(`$${subtotal.toFixed(2)}`);
+            // $('#coupon-message').show();
+        },
+            error: function (xhr) {
+                const errorMessage = xhr.responseJSON.message || 'An error occurred. Please try again.';
+                $('#coupon-error').text(errorMessage).show();
+                $('#coupon-message').hide();
+            }
+        });
+     }
+
+     $('#remove-coupon-btn').click(function () {
+        $('#coupon-message').hide();
+        removeCoupon();
+    });
+
     $(".btn-qty").on("click", function () {
         let $input = $(this).siblings('.item-qty');
         let $total = $(this).closest('tr').find('.item-total');
@@ -109,8 +154,28 @@
 
         if ($(this).hasClass("inc")) {
             currentValue += 1;
-        } else if ($(this).hasClass("dec") && currentValue > 1) {
+        }
+        
+        else if ($(this).hasClass("dec") && currentValue > 1) 
+        {
             currentValue -= 1;
+            $input.val(currentValue);
+
+            let subtotal = 0;
+             $(".item-total").each(function () {
+              subtotal += parseFloat($(this).text());
+              });
+        
+             $(".sub-total").text("$" + subtotal.toFixed(2));
+
+            let cartValue = parseFloat(document.querySelector(".cart-value").value);
+            
+              console.log(cartValue,subtotal);
+
+              if (cartValue > subtotal)
+              {
+                removeCoupon();
+              }
         }
 
         $input.val(currentValue);
@@ -192,85 +257,50 @@
 });
 </script> 
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        let totalAmount = parseFloat("{{ $total_amount }}");
+ <script>
+$(document).ready(function () {
+    $('#apply-coupon-btn').click(function (e) {
+        e.preventDefault();
+        const couponCode = $('#coupon-code').val();
 
-        // Check session storage for coupon state
-        if (sessionStorage.getItem('couponApplied') === 'true') {
-            document.getElementById('coupon-code').value = sessionStorage.getItem('couponCode');
-            document.getElementById('coupon-code').disabled = true;
-            document.getElementById('apply-coupon-btn').style.display = 'none';
-            document.getElementById('remove-coupon-btn').style.display = 'inline-block';
-            document.getElementById('discount').style.display = 'block';
-            document.getElementById('discount-amount').innerText = '$' + sessionStorage.getItem('discountAmount');
-            document.getElementById('total-amount').innerText = `$${totalAmount - parseFloat(sessionStorage.getItem('discountAmount'))}`;
-        } else {
-            resetCouponState();
+        if (!couponCode) {
+            $('#coupon-error').text('Please enter a coupon code.').show();
+            return;
         }
 
-        document.getElementById('coupon-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            let formData = new FormData(this);
+        $.ajax({
+            url: '{{ route('apply.coupan') }}',
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                coupan_code: couponCode
+            },
+            success: function (response) {
+                $('#coupon-code').prop('readonly', true);
+                $('#coupon-message').text(response.message).show();
+                $('#coupon-error').hide();
 
-            fetch(this.action, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-                },
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('coupon-message').innerText = data.message;
-                        document.getElementById('coupon-message').style.display = 'block';
-                        document.getElementById('coupon-error').style.display = 'none';
+       
+                $('#discount').show();
+                $('#coupan-code').text('$' + response.discount);
+                $('#total-amount').text('$' + response.total_amount);
 
-                        document.getElementById('apply-coupon-btn').style.display = 'none';
-                        document.getElementById('remove-coupon-btn').style.display = 'inline-block';
+               
+                $('#apply-coupon-btn').hide();
+                $('#remove-coupon-btn').show();
 
-                        document.getElementById('discount').style.display = 'block';
-                        document.getElementById('discount-amount').innerText = '$' + data.discount;
-
-                        let discountedAmount = totalAmount - data.discount;
-                        document.getElementById('total-amount').innerText = `$${discountedAmount}`;
-
-                        document.getElementById('coupon-code').disabled = true;
-
-                        // Store coupon state in session storage
-                        sessionStorage.setItem('couponApplied', 'true');
-                        sessionStorage.setItem('couponCode', document.getElementById('coupon-code').value);
-                        sessionStorage.setItem('discountAmount', data.discount);
-                    } else {
-                        document.getElementById('coupon-error').innerText = data.message;
-                        document.getElementById('coupon-error').style.display = 'block';
-                        document.getElementById('coupon-message').style.display = 'none';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('coupon-error').innerText = 'An error occurred. Please try again.';
-                    document.getElementById('coupon-error').style.display = 'block';
-                });
+            },
+            error: function (xhr) {
+                const errorMessage = xhr.responseJSON.message || 'An error occurred. Please try again.';
+                $('#coupon-error').text(errorMessage).show();
+                $('#coupon-message').hide();
+            }
         });
-
-        document.getElementById('remove-coupon-btn').addEventListener('click', function () {
-            resetCouponState();
-            sessionStorage.removeItem('couponApplied');
-            sessionStorage.removeItem('couponCode');
-            sessionStorage.removeItem('discountAmount');
-        });
-
-        function resetCouponState() {
-            document.getElementById('coupon-code').value = '';
-            document.getElementById('coupon-code').disabled = false;
-            document.getElementById('apply-coupon-btn').style.display = 'inline-block';
-            document.getElementById('remove-coupon-btn').style.display = 'none';
-            document.getElementById('discount').style.display = 'none';
-            document.getElementById('coupon-message').style.display = 'none';
-            document.getElementById('coupon-error').style.display = 'none';
-            document.getElementById('total-amount').innerText = `$${totalAmount}`;
-        }
     });
-</script> 
+  
+    
+});
+
+</script>
+
+

@@ -15,7 +15,7 @@
             <div class="alert alert-danger">{{(session('error'))}}</div>
           @endif
             <h2>User Login</h2>
-            <form action="{{route('user.login')}}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('user.login', ['redirect' => request()->query('redirect', 'home.page')]) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="input-group">
                     <label for="username">User Email</label>

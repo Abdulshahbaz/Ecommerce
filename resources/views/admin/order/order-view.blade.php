@@ -34,13 +34,7 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
-            <div class="callout callout-info">
-              <h5><i class="fas fa-info"></i> Note:</h5>
-              This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-            </div>
-
-
-            <!-- Main content -->
+           <!-- Main content -->
             <div class="invoice p-3 mb-3">
               <!-- title row -->
               <div class="row">
@@ -166,7 +160,8 @@
                     <i class="far fa-credit-card"></i> Payment Status
                 </button>
 
-                <button type="button" class="btn btn-warning float-right"  style="margin-right: 5px;" data-toggle="modal" data-target="#orderStatusModal">
+                <button type="button" class="btn btn-warning float-right"  style="margin-right: 5px;" 
+                     @if($invoice->order_status == 'Deliver' || $invoice->order_status == 'Cancel') disabled  @else   data-toggle="modal" data-target="#orderStatusModal" @endif>
                   <i class="far fa-credit-card"></i> Order Status
               </button>
                 
@@ -241,7 +236,12 @@
                             <label for="neworderStatus">New Order Status</label>
                             <select class="form-control" id="neworderStatus" name="neworderStatus">
                                 <option value="Pending" {{ $invoice->order_status == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="Completed" {{ $invoice->order_status == 'Completed' ? 'selected' : '' }}>Completed</option>
+                                <option value="On_The_Way" {{ $invoice->order_status == 'On_The_Way' ? 'selected' : '' }}>On The Way</option>
+                                <option value="Inprogress" {{ $invoice->order_status == 'Inprogress' ? 'selected' : '' }}>Inprogress</option>
+
+                                <option value="Paking" {{ $invoice->order_status == 'Paking' ? 'selected' : '' }}>Paking</option>
+                                <option value="Deliver" {{ $invoice->order_status == 'Deliver' ? 'selected' : '' }}>Deliver</option>
+                                <option value="Cancel" {{ $invoice->order_status == 'Cancel' ? 'selected' : '' }}>Cancel</option>
                             </select>
                         </div>
                     </div>

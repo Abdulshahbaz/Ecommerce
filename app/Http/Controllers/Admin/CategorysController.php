@@ -47,7 +47,7 @@ class CategorysController extends Controller
 
         $category_insert = new Category;
         $category_insert->category_name = $request->category_name;
-        $category_insert->slug_name     = $request->category_name;
+        $category_insert->slug_name     = $request->slug_name;
         $category_insert->image         = $imageName;
         
         $category_insert->save();

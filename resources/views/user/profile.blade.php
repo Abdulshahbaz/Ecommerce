@@ -26,7 +26,7 @@
                             <div class="form-group">
                                 <label for="exampleInputName">Email</label>
                                 <input type="email" class="form-control" name="email" placeholder="Enter a Email"
-                                value="{{$user_profile->email}}">
+                                value="{{$user_profile->email}}" readonly>
                                 @error('email')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror

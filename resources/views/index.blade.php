@@ -16,12 +16,12 @@
                 <div class="hero__categories">
                     <div class="hero__categories__all">
                         <i class="fa fa-bars"></i>
-                        <span>All departments</span>
+                        <span>All Category</span>
                     </div>
                     @foreach ($category_name as $items)
                     <ul>
                         <li>
-                            <a href="#">
+                            <a href="{{route('products.grid',['id' => $items->id])}}">
                              {{$items->category_name}}
                             </a>
                         </li>
@@ -32,12 +32,12 @@
             <div class="col-lg-9">
                 <div class="hero__search">
                     <div class="hero__search__form">
-                        <form action="#">
+                        <form action="{{route('products.grid')}}">
                             <div class="hero__search__categories">
                                 All Categories
                                 <span class="arrow_carrot-down"></span>
                             </div>
-                            <input type="text" placeholder="What do yo u need?">
+                            <input type="text" name="query" placeholder="What do yo u need?">
                             <button type="submit" class="site-btn">SEARCH</button>
                         </form>
                     </div>
@@ -52,13 +52,13 @@
                     </div>
                 </div>
                 
-                @foreach ($banner_image as $items)              
+                @if (!empty($banner_images['first_image']))            
                 <div class="hero__item set-bg">
-                    <img src="{{ asset('admin/img/' . $items->image) }}" alt="Image">
+                    <img src="{{ asset('admin/img/' .$banner_images['first_image']->image) }}" alt="Image">
                     <div class="hero__text">
                     </div>
                 </div>
-                @endforeach
+                @endif
             </div>
         </div>
     </div>
@@ -97,6 +97,7 @@
                 </div>
             </div>
             <div class="row featured__filter">
+ 
                 @foreach ($product_name as $items)
                 <div class="col-lg-3 col-md-4 col-sm-6 mix {{$items->category->slug_name}}">
                     <div class="featured__item">
@@ -112,7 +113,7 @@
                             </ul>
                         </div>
                         <div class="featured__item__text">
-                            <h6><a href="#">{{$items->name}}</a></h6>
+                            <h6><a  href="{{route('product.details',$items->id)}}">{{$items->name}}</a></h6>
                             <h5>${{$items->price}}</h5>
                         </div>
                         <a href="javascript:void(0)" class="site-btn w-100 text-center toggle-cart-btn"
@@ -123,22 +124,22 @@
             </div>          
         </div>
     </section>
+
+    @if (!empty($banner_images['last_images']))
     <div class="banner">
         <div class="container">
             <div class="row">
+                @foreach ($banner_images['last_images'] as $image)                
                 <div class="col-lg-6 col-md-6 col-sm-6">
                     <div class="banner__pic">
-                        <img src="{{asset('file/img/banner/banner-1.jpg')}}" alt="">
+                        <img src="{{ asset('admin/img/' .$image->image) }}" alt="">
                     </div>
                 </div>
-                <div class="col-lg-6 col-md-6 col-sm-6">
-                    <div class="banner__pic">
-                        <img src="{{asset('file/img/banner/banner-2.jpg')}}" alt="">
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>
+    @endif
     <!-- Banner End -->
 
     <!-- Latest Product Section Begin -->

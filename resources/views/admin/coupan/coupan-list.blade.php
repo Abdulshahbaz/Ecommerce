@@ -37,7 +37,7 @@
                                         <td>{{$key + 1}}</td>
                                         <td>{{$items->title}}</td>
                                         <td>{{$items->type}}</td>
-                                        <td>{{$items->coupan_code}}</td>
+                                        <td>{{strtoupper($items->coupan_code)}}</td>
                                         <td>{{$items->value}}</td>
                                         <td>{{$items->cart_value}}</td>
                                         <td>{{$items->maxuse}}</td>

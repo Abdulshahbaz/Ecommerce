@@ -43,7 +43,7 @@
                                             <td>{{ $order->phone }}</td>
                                             <td>{{ number_format($order->subtotal, 2) }}</td>
                                             <td>{{ number_format($order->total, 2) }}</td>
-                                            <td>{{ ucfirst($order->payment_status) }}</td>
+                                            <td>{{ ucfirst($order->order_status) }}</td>
                                             <td>{{ $order->transaction_id }}</td>
                                             <td>{{ $order->created_at->format('d-m-Y H:i') }}</td>
                                             <td>

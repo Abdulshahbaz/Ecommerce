@@ -31,7 +31,7 @@
                              </ul>
                          </div>
                          <div class="header__top__right__auth">
-                             {{-- <a href="#"><i class="fa fa-user"></i> Login</a> --}}
+                             <a href="{{ route('user.login', ['redirect' => 'home']) }}"><i class="fa fa-user"></i> Login</a>
                          </div>
                      </div>
                  </div>
@@ -49,7 +49,7 @@
                  <nav class="header__menu">
                      <ul>
                          <li class="active"><a href="{{route('home.page')}}">Home</a></li>
-                         <li><a href="{{route('shop.grid')}}">Shop</a></li>
+                         <li><a href="{{route('products.grid')}}">Products</a></li>
                          {{-- <li><a href="#">Pages</a>
                              <ul class="header__menu__dropdown">
                                  <li><a href="{{route('shop.details')}}">Shop Details</a></li>

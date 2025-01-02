@@ -13,7 +13,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h2 class="card-title">Banner List</h2>
-                            <a href="{{ route('banner.create')}}" class="btn btn-primary float-end">Add Banner</a>
+                            {{-- <a href="{{ route('banner.create')}}" class="btn btn-primary float-end">Add Banner</a> --}}
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -65,12 +65,12 @@
                                             <a href="{{route('banner.edit',$items->id)}}" class="btn btn-success">
                                                 <i class="fas fa-pencil-alt"></i>
                                             </a>
-                                            <form action="{{route('banner.destroy',$items->id)}}" method="POST" class="d-inline" 
+                                            {{-- <form action="{{route('banner.destroy',$items->id)}}" method="POST" class="d-inline" 
                                                     enctype="multipart/form-data">@csrf @method('Delete')
                                                 <button type="submit" class="btn btn-danger" onclick="return confirm('Are You Sure Delete Thise Record')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
-                                            </form>
+                                            </form> --}}
 
                                         </td>
                                     </tr>

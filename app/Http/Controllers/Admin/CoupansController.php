@@ -40,7 +40,7 @@ class CoupansController extends Controller
         $coupan_insert = new Coupan;
         $coupan_insert->title         = $request->coupan_title;
         $coupan_insert->type          = $request->type;
-        $coupan_insert->coupan_code   = $request->coupan_code;
+        $coupan_insert->coupan_code   = strtoupper($request->coupan_code);
         $coupan_insert->value         = $request->coupan_value;
         $coupan_insert->cart_value    = $request->cart_value;
        // dd($coupan_insert);
@@ -84,7 +84,7 @@ class CoupansController extends Controller
         $coupan_update = Coupan::find($id);
         $coupan_update->title         = $request->title;
         $coupan_update->type          = $request->type;
-        $coupan_update->coupan_code   = $request->coupan_code;
+        $coupan_update->coupan_code   = strtoupper($request->coupan_code);
         $coupan_update->value         = $request->value;
         $coupan_update->cart_value    = $request->cart_value;
         $coupan_update->save();

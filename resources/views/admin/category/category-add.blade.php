@@ -16,7 +16,7 @@
                                     <div class="form-group">
                                         <label for="exampleInputName">Category_Name</label>
                                         <input type="text" class="form-control" name="category_name"
-                                            placeholder="Enter a Category Name" value="{{ old('category_name') }}">
+                                          id="category_name"  placeholder="Enter a Category Name" value="{{ old('category_name') }}">
                                     @error('category_name')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -24,7 +24,7 @@
                                     <div class="form-group">
                                         <label for="exampleInputName">Slug Name</label>
                                         <input type="text" class="form-control" name="slug_name"
-                                            placeholder="Slug Name" value="{{ old('slug_name') }}">
+                                            id="slug_name" placeholder="Slug Name" value="{{ old('slug_name') }}" readonly>
                                             @error('slug_name')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -47,4 +47,11 @@
                 </div>
             </div>
         </section>
+        <script>
+            document.getElementById('category_name').addEventListener('input', function() {
+                const categoryName = this.value;
+                const slug = categoryName.trim().toLowerCase().replace(/\s+/g, '-'); 
+                document.getElementById('slug_name').value = slug;
+            });
+        </script>
 @endsection

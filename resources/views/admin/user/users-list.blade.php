@@ -24,6 +24,7 @@
                                         <th>User Name</th>
                                         <th>User Email</th>
                                         <th>Phone</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -33,6 +34,11 @@
                                             <td>{{ $user->name}}</td>
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->mobile }}</td>
+                                            <td>
+                                                <a href="{{ route('orders.user', $user->id) }}" class="btn btn-info me-2">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

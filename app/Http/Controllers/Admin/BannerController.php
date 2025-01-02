@@ -55,9 +55,6 @@ class BannerController extends Controller
         return redirect()->route('banner.index')->with('success','Banner Add SuccessFully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $banner_view = Banner::find($id);

@@ -40,9 +40,9 @@ Route::middleware(['admin_auth'])->prefix('/admin')->group(function()
     Route::post('/toggle-blog', [BlogController::class, 'toggle_Blog'])->name('toggle.blog');
 
     Route::resource('/orders',OrderController::class); 
+    Route::get('/orders/user/{userId}',[OrderController::class,'index'])->name('orders.user');
 
     Route::resource('/users',UsersController::class); 
-
     Route::get('/order/{id}/generate-pdf', [PdfgenerateController::class, 'generate_PDF'])->name('order.generatePDF');
 
 
